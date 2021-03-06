@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/pilot-planning/static/css/main.afd7172b.chunk.css",
+    "main.js": "/pilot-planning/static/js/main.22c99c20.chunk.js",
+    "main.js.map": "/pilot-planning/static/js/main.22c99c20.chunk.js.map",
+    "runtime-main.js": "/pilot-planning/static/js/runtime-main.079a38b6.js",
+    "runtime-main.js.map": "/pilot-planning/static/js/runtime-main.079a38b6.js.map",
+    "static/js/2.e0a21d1a.chunk.js": "/pilot-planning/static/js/2.e0a21d1a.chunk.js",
+    "static/js/2.e0a21d1a.chunk.js.map": "/pilot-planning/static/js/2.e0a21d1a.chunk.js.map",
+    "static/js/3.d543ec59.chunk.js": "/pilot-planning/static/js/3.d543ec59.chunk.js",
+    "static/js/3.d543ec59.chunk.js.map": "/pilot-planning/static/js/3.d543ec59.chunk.js.map",
+    "index.html": "/pilot-planning/index.html",
+    "static/css/main.afd7172b.chunk.css.map": "/pilot-planning/static/css/main.afd7172b.chunk.css.map",
+    "static/js/2.e0a21d1a.chunk.js.LICENSE.txt": "/pilot-planning/static/js/2.e0a21d1a.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.079a38b6.js",
+    "static/js/2.e0a21d1a.chunk.js",
+    "static/css/main.afd7172b.chunk.css",
+    "static/js/main.22c99c20.chunk.js"
+  ]
+}
