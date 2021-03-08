@@ -139,6 +139,13 @@ const Airports=()=>{
                         i++;
                     }
                     nextWord+='l';
+
+                    //remove "elevation is" prefix
+                    while (true){
+                        if (parseInt(nextWord[0],10))
+                            break;
+                        nextWord=nextWord.substring(1);
+                    }
                     document.getElementById('depElev').textContent=nextWord;
                     break;
                 }
@@ -215,7 +222,69 @@ const Airports=()=>{
         .catch(err=>console.log(err))
     }
     const getApproachingAirportData=(url)=>{
+        axios.get(url)
+        .then((res)=>{
+          const $=cheerio.load(res.data);
+          if (!$('#aptcomms').text()){
+            document.getElementById('airportData').textContent='NOTHING FOUND, FUCK YOU ~~C===3';
+          }else{
+            const aptData=$('.aptdata').text().toLowerCase();
+            const th=$('th');
 
+            //get elevation
+            for (var i=0;i<aptData.length;i++){
+                var nextWord="";
+                while(aptData[i]!==" "){
+                    nextWord+=aptData[i];
+                    i++;
+                }
+                if (nextWord==='elevation'){
+                    while(aptData[i]!=='l'){
+                        nextWord+=aptData[i];
+                        i++;
+                    }
+                    nextWord+='l';
+
+                    //remove "elevation is" prefix
+                    while (true){
+                        if (parseInt(nextWord[0],10))
+                            break;
+                        nextWord=nextWord.substring(1);
+                    }
+                    document.getElementById('destElev').textContent=nextWord;
+                    break;
+                }
+            }
+            
+            //get tower,ground,approach
+            th.each((j,elem)=>{
+                const text=$(elem).text().toLowerCase();
+                
+                //extract last word
+                var lastWord="";
+                for (let i=text.length-2;i>-1;i--){
+                    if (text[i]===" ")
+                        break;
+                    lastWord=text[i]+lastWord;
+                }
+
+                switch(lastWord){
+                    case 'tower':
+                        document.getElementById('apcTower').textContent=$(elem).next().text();
+                        break;
+                    case 'approach':
+                        document.getElementById('apcCont').textContent=$(elem).next().text();
+                        break;
+                    case 'ground':
+                        document.getElementById('apcGndCont').textContent=$(elem).next().text();
+                        break;
+                    default:
+                        break;
+                }
+            })
+          }
+        })
+        .catch(e=>{console.log(e)})
     }
 
     return <React.Fragment>
