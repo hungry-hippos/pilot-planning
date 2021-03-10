@@ -1,128 +1,161 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios';
 import cheerio from 'cheerio';
+import {BsSearch} from 'react-icons/bs'
+import Button from 'react-bootstrap/Button'
 import './Airports.css'
 
 const DataTable=()=>{
-    return <table id='dataTable'>
-        <tbody>
-        <tr>
-            <td>Departure Elevation</td>
-            <td id='depElev'></td>
-        </tr>
-        <tr>
-            <td>Clearance Delivery</td>
-            <td id='clncDeliv'></td>
-        </tr>
-        <tr>
-            <td>Departure Ground Control</td>
-            <td id='depGndCont'></td>
-        </tr>
-        <tr>
-            <td>Departure Tower</td>
-            <td id='depTower'></td>
-        </tr>
-        <tr>
-            <td>ATIS</td>
-            <td id='depATIS'></td>
-        </tr>
-        <tr>
-            <td>ASOS</td>
-            <td id='depASOS'></td>
-        </tr>
-        <tr>
-            <td>AWOS</td>
-            <td id='depAWOS'></td>
-        </tr>
-        <tr>
-            <td>Departure Frequencies</td>
-            <td id='departure'></td>
-        </tr>
-        <tr>
-            <td>Destination Elevation</td>
-            <td id='destElev'></td>
-        </tr>
-        <tr>
-            <td>Approach Control</td>
-            <td id='apcCont'></td>
-        </tr>
-        <tr>
-            <td>Approach Tower</td>
-            <td id='apcTower'></td>
-        </tr>
-        <tr>
-            <td>Approach Ground Control</td>
-            <td id='apcGndCont'></td>
-        </tr>
-        </tbody>
-    </table>
-}
 
-const Airports=()=>{
-    
-    const getAirportNames=(e,isDeparture)=>{
-
-    //block form from auto-submitting
-    e.preventDefault();
-
-    //empties suggested airports, extract input airport name, fetch possible airports from skyvector
-    document.getElementById('airportNames').textContent="";
-    const name=(isDeparture)?document.getElementById('departingAirport').value:document.getElementById('approachingAirport').value;
-
-    var urlName="https://skyvector.com/search/site/";
-    for (var i=0;i<name.length;i++){
-        if (name[i]!==" "){
-        urlName+=name[i];
-        }else{
-        urlName+="%2520";
+    const editRhInputs=()=>{
+        const inputs=document.getElementsByClassName('rhInput');
+        for (var i=0;i<inputs.length;i++){
+            inputs[i].disabled=false;
         }
     }
 
-    axios.get(urlName)
-    .then((res)=>{
-        //parses string html into virtual DOM
-        const $=cheerio.load(res.data);
-
-        //extracts port names + hrefs from DOM
-        var results=[];
-        $('.search-results').find('a').each(function(i){
-        results[i]={
-            name:$(this).text(),
-            href:$(this).attr('href')
+    useEffect(()=>{
+        const inputs=document.getElementsByClassName('rhInput');
+        for (var i=0;i<inputs.length;i++){
+            inputs[i].disabled=true;
         }
-        });
-        return results;
     })
-    .then((res)=>{
-        //displays results on UI and loads onClick listener to get its respective data
-        res.forEach((elem)=>{
-            const portName=document.createElement('div');
-            portName.setAttribute('href',elem.href);
-            portName.textContent=elem.name;
+    return <div id='rightHalf'>
+        <h3>DEPARTING</h3>
+        <h4 id='depAirport'>Please search and select an airport.</h4>
+        <hr/>
+        <table id='departingTable'>
+            <tbody>
+            <tr>
+                <td>Dep. Elevation</td>
+                <td><input id='depElev' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Clearance Delivery</td>
+                <td><input id='clncDeliv' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Dep. Ground Control</td>
+                <td><input id='depGndCont' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Dep. Tower</td>
+                <td><input id='depTower' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>ATIS</td>
+                <td><input id='depATIS' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>ASOS</td>
+                <td><input id='depASOS' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>AWOS</td>
+                <td><input id='depAWOS' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Dep. Frequencies</td>
+                <td><input id='departure' className='rhInput'></input></td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <h3>DESTINATION</h3>
+        <h4 id='destAirport'>Please search and select an airport.</h4>
+        <hr/>
+        <table id='approachingTable'>
+            <tbody>
+            <tr>
+                <td>Dest. Elevation</td>
+                <td><input id='destElev' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Apc. Control</td>
+                <td><input id='apcCont' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Apc. Tower</td>
+                <td><input id='apcTower' className='rhInput'></input></td>
+            </tr>
+            <tr>
+                <td>Apc. Ground Control</td>
+                <td><input id='apcGndCont' className='rhInput'></input></td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <Button variant='primary' className='rhBtn'>SAVE AND CONTINUE</Button>
+        <Button variant='primary' onClick={editRhInputs} className='rhBtn'>EDIT</Button>
+    </div>
+}
+const BrowseAirports=()=>{
+    const getAirportNames=(e,isDeparture)=>{
 
-            if (isDeparture){
-                portName.addEventListener('click',()=>{
-                    getDepartureAirportData(elem.href);
-                })
+        //block form from auto-submitting
+        e.preventDefault();
+    
+        //empties suggested airports, extract input airport name, fetch possible airports from skyvector
+        document.getElementById('airportNames').textContent="";
+        const name=(isDeparture)?document.getElementById('departingAirport').value:document.getElementById('approachingAirport').value;
+    
+        var urlName="https://skyvector.com/search/site/";
+        for (var i=0;i<name.length;i++){
+            if (name[i]!==" "){
+            urlName+=name[i];
             }else{
-                portName.addEventListener('click',()=>{
-                    getApproachingAirportData(elem.href);
-                })
+            urlName+="%2520";
             }
-            
-            document.getElementById('airportNames').appendChild(portName);
+        }
+    
+        axios.get(urlName)
+        .then((res)=>{
+            //parses string html into virtual DOM
+            const $=cheerio.load(res.data);
+    
+            //extracts port names + hrefs from DOM
+            var results=[];
+            $('.search-results').find('a').each(function(i){
+            results[i]={
+                name:$(this).text(),
+                href:$(this).attr('href')
+            }
+            });
+            return results;
         })
-    })
-    .catch(err=>console.log(err))
+        .then((res)=>{
+            //displays results on UI and loads onClick listener to get its respective data
+            res.forEach((elem)=>{
+                const portName=document.createElement('div');
+                portName.setAttribute('href',elem.href);
+                portName.classList.add('availableAirport');
+                portName.textContent=elem.name;
+    
+                if (isDeparture){
+                    portName.addEventListener('click',()=>{
+                        document.getElementById('depAirport').textContent=elem.name;
+                        getDepartureAirportData(elem.href);
+                    })
+                }else{
+                    portName.addEventListener('click',()=>{
+                        document.getElementById('destAirport').textContent=elem.name;
+                        getApproachingAirportData(elem.href);
+                    })
+                }
+                
+                document.getElementById('airportNames').appendChild(portName);
+            })
+        })
+        .catch(err=>console.log(err))
     }
 
     const getDepartureAirportData=(url)=>{
         axios.get(url)
         .then((res)=>{
-          const $=cheerio.load(res.data);
-          if (!$('#aptcomms').text()){
+            const $=cheerio.load(res.data);
+            if (!$('#aptcomms').text()){
             document.getElementById('airportData').textContent='NOTHING FOUND, FUCK YOU ~~C===3';
-          }else{
+            }else{
             const aptData=$('.aptdata').text().toLowerCase();
             const th=$('th');
 
@@ -146,7 +179,7 @@ const Airports=()=>{
                             break;
                         nextWord=nextWord.substring(1);
                     }
-                    document.getElementById('depElev').textContent=nextWord;
+                    document.getElementById('depElev').value=nextWord;
                     break;
                 }
             }            
@@ -172,13 +205,13 @@ const Airports=()=>{
                             i++;
                             switch(keyWord){
                                 case 'atis':
-                                    document.getElementById('depATIS').textContent=$(elem).next().text();
+                                    document.getElementById('depATIS').value=$(elem).next().text();
                                     break;
                                 case 'awos':
-                                    document.getElementById('depAWOS').textContent=$(elem).next().text();                                    
+                                    document.getElementById('depAWOS').value=$(elem).next().text();                                    
                                     break;
                                 case 'asos':
-                                    document.getElementById('depASOS').textContent=$(elem).next().text();                                    
+                                    document.getElementById('depASOS').value=$(elem).next().text();                                    
                                     break;
                                 default:
                                     break;
@@ -202,32 +235,32 @@ const Airports=()=>{
 
                 switch(lastWord){
                     case 'tower':
-                        document.getElementById('depTower').textContent=$(elem).next().text();
+                        document.getElementById('depTower').value=$(elem).next().text();
                         break;
                     case 'departure':
-                        document.getElementById('departure').textContent=$(elem).next().text();
+                        document.getElementById('departure').value=$(elem).next().text();
                         break;
                     case 'ground':
-                        document.getElementById('depGndCont').textContent=$(elem).next().text();
+                        document.getElementById('depGndCont').value=$(elem).next().text();
                         break;
                     case 'delivery':
-                        document.getElementById('clncDeliv').textContent=$(elem).next().text();
+                        document.getElementById('clncDeliv').value=$(elem).next().text();
                         break;
                     default:
                         break;
                 }
             })
-          }
+            }
         })
         .catch(err=>console.log(err))
     }
     const getApproachingAirportData=(url)=>{
         axios.get(url)
         .then((res)=>{
-          const $=cheerio.load(res.data);
-          if (!$('#aptcomms').text()){
+            const $=cheerio.load(res.data);
+            if (!$('#aptcomms').text()){
             document.getElementById('airportData').textContent='NOTHING FOUND, FUCK YOU ~~C===3';
-          }else{
+            }else{
             const aptData=$('.aptdata').text().toLowerCase();
             const th=$('th');
 
@@ -251,7 +284,7 @@ const Airports=()=>{
                             break;
                         nextWord=nextWord.substring(1);
                     }
-                    document.getElementById('destElev').textContent=nextWord;
+                    document.getElementById('destElev').value=nextWord;
                     break;
                 }
             }
@@ -270,39 +303,61 @@ const Airports=()=>{
 
                 switch(lastWord){
                     case 'tower':
-                        document.getElementById('apcTower').textContent=$(elem).next().text();
+                        document.getElementById('apcTower').value=$(elem).next().text();
                         break;
                     case 'approach':
-                        document.getElementById('apcCont').textContent=$(elem).next().text();
+                        document.getElementById('apcCont').value=$(elem).next().text();
                         break;
                     case 'ground':
-                        document.getElementById('apcGndCont').textContent=$(elem).next().text();
+                        document.getElementById('apcGndCont').value=$(elem).next().text();
                         break;
                     default:
                         break;
                 }
             })
-          }
+            }
         })
         .catch(e=>{console.log(e)})
     }
 
-    return <React.Fragment>
-        <div>
-            <form id='departingForm'>
-                <label htmlFor='departingAirport'>Departing Airport</label>
-                <input type="text" id='departingAirport' name='departingAirport'></input>
-                <button onClick={(e)=>{getAirportNames(e,true)}}>SUBMIT</button>
-            </form>
-            <form id='approachingForm'>
-                <label htmlFor='airportName'>Approaching Airport</label>
-                <input type="text" id='approachingAirport' name='approachingAirport'></input>
-                <button onClick={(e)=>{getAirportNames(e,false)}}>SUBMIT</button>
-            </form>
-        </div>
+    //on keypress enter, form is NOT submitted and airport names are fetched
+    const blockSubmitDep=(e)=>{
+        e.preventDefault();
+        getAirportNames(e,true);
+    }
+    const blockSubmitDest=(e)=>{
+        e.preventDefault();
+        getAirportNames(e,false);
+    }
 
-        <div id='airportNames'></div>
-        <DataTable />
+    return <div id='leftHalf'>
+            <div id='forms'>
+                <form id='departingForm' onSubmit={blockSubmitDep}>
+                    <label htmlFor='departingAirport'>Departing Airport</label>
+                    <input className='searchInput' type="text" id='departingAirport' name='departingAirport'></input>
+                    <Button onClick={(e)=>{getAirportNames(e,true)}} className='searchBtn'><BsSearch/></Button>
+                </form>
+                <form id='approachingForm' onSubmit={blockSubmitDest}>
+                    <label htmlFor='airportName'>Destination Airport</label>
+                    <input className='searchInput' type="text" id='approachingAirport' name='approachingAirport'></input>
+                    <Button onClick={(e)=>{getAirportNames(e,false)}} className='searchBtn'><BsSearch/></Button>
+                </form>
+            </div>
+            <div id='suggestedNames'>
+                <h3>SUGGESTED AIRPORTS</h3>
+                <hr />
+                <div id='airportNames'></div>
+            </div>
+        </div>
+}
+
+const Airports=()=>{
+    
+    return <React.Fragment>
+        <div id='wholeScreen'>
+            <BrowseAirports />
+            <DataTable />
+        </div>
     </React.Fragment>
     
 }
