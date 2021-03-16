@@ -3,9 +3,9 @@ const  { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports=function(app){
     app.use(
-        ["search/site","airport"],
+        ["/search/site","/airport"],
         createProxyMiddleware({
-            target:"https://skyvector.com/",
+            target:"https://skyvector.com",
             changeOrigin:true
         })
     );
