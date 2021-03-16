@@ -101,7 +101,7 @@ const BrowseAirports=()=>{
     
         //url is broken for proxy usage (API routes on setUpProxy.js)
         // var urlName="https://skyvector.com/search/site/";
-        var urlName="search/site/";
+        var urlName="https://skyvector.com/search/site/search/site/";
         for (var i=0;i<name.length;i++){
             if (name[i]!==" "){
             urlName+=name[i];
@@ -109,6 +109,7 @@ const BrowseAirports=()=>{
             urlName+="%2520";
             }
         }
+        console.log(urlName);
 
         axios.get(urlName)
         .then((res)=>{
