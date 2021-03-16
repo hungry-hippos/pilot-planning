@@ -99,7 +99,9 @@ const BrowseAirports=()=>{
         document.getElementById('airportNames').textContent="";
         const name=(isDeparture)?document.getElementById('departingAirport').value:document.getElementById('approachingAirport').value;
     
-        var urlName="https://skyvector.com/search/site/";
+        //url is broken for proxy usage (API routes on setUpProxy.js)
+        // var urlName="https://skyvector.com/search/site/";
+        var urlName="/search/site/";
         for (var i=0;i<name.length;i++){
             if (name[i]!==" "){
             urlName+=name[i];
@@ -107,7 +109,7 @@ const BrowseAirports=()=>{
             urlName+="%2520";
             }
         }
-    
+
         axios.get(urlName)
         .then((res)=>{
             //parses string html into virtual DOM
@@ -150,6 +152,9 @@ const BrowseAirports=()=>{
     }
 
     const getDepartureAirportData=(url)=>{
+        //trimming url to root directory
+        url=url.substring(22);
+
         axios.get(url)
         .then((res)=>{
             const $=cheerio.load(res.data);
@@ -252,9 +257,13 @@ const BrowseAirports=()=>{
             })
             }
         })
-        .catch(err=>console.log(err))
+        .catch(err=>console.log(" FUCK YOU"))
     }
     const getApproachingAirportData=(url)=>{
+        //trimming url to root directory
+        url=url.substring(22);
+
+
         axios.get(url)
         .then((res)=>{
             const $=cheerio.load(res.data);
@@ -329,6 +338,7 @@ const BrowseAirports=()=>{
         e.preventDefault();
         getAirportNames(e,false);
     }
+
 
     return <div id='leftHalf'>
             <div id='forms'>
