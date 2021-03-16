@@ -101,7 +101,7 @@ const BrowseAirports=()=>{
     
         //url is broken for proxy usage (API routes on setUpProxy.js)
         // var urlName="https://skyvector.com/search/site/";
-        var urlName="/search/site/";
+        var urlName="search/site/";
         for (var i=0;i<name.length;i++){
             if (name[i]!==" "){
             urlName+=name[i];
@@ -153,7 +153,8 @@ const BrowseAirports=()=>{
 
     const getDepartureAirportData=(url)=>{
         //trimming url to root directory
-        url=url.substring(22);
+        url=url.substring(23);
+        console.log(url);
 
         axios.get(url)
         .then((res)=>{
@@ -261,7 +262,8 @@ const BrowseAirports=()=>{
     }
     const getApproachingAirportData=(url)=>{
         //trimming url to root directory
-        url=url.substring(22);
+        url=url.substring(23);
+        console.log(url);
 
 
         axios.get(url)
